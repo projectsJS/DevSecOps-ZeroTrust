@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-PRIVATE_KEY = """-----BEGIN RSA PRIVATE KEY-----
-ABC123SECRET
------END RSA PRIVATE KEY-----"""
+PRIVATE_KEY = """-----BEGIN OPENSSH PRIVATE KEY-----
+ABC123SECRETKEY
+-----END OPENSSH PRIVATE KEY-----"""
 
 @app.route("/")
 def home():

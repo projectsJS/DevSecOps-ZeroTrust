@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # ✅ Checkout Code
+    # ✅ Checkout FULL repo (IMPORTANT FIX)
     - name: Checkout Code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0   # 🔥 Enables full history scan
 
     # 🐳 Build Docker Image
     - name: Build Docker Image
@@ -21,11 +23,12 @@ jobs:
         cd app
         docker build -t devsecops-app .
 
-    # 🔐 Gitleaks Full Scan (FIXED)
+    # 🔐 Gitleaks Full Repository Scan (FINAL FIX)
     - name: Run Gitleaks Scan
       run: |
         docker run --rm -v $(pwd):/repo zricethezav/gitleaks detect \
           --source=/repo \
+          --no-git \
           --verbose \
           --redact \
           --exit-code=1
@@ -39,7 +42,7 @@ jobs:
         exit-code: 1
         severity: CRITICAL,HIGH
 
-    # 📊 Success Message (Optional)
+    # ✅ Success Message
     - name: Pipeline Success
       if: success()
       run: echo "✅ Build and Security Checks Passed!"
