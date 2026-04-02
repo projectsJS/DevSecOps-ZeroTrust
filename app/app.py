@@ -17,5 +17,8 @@ def login():
         return jsonify({"message": "Login success"})
     return jsonify({"message": "Unauthorized"}), 401
 
+password = "password123"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
