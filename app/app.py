@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+AWS_SECRET_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLE"
+
 @app.route("/")
 def home():
     return "DevSecOps Zero Trust App Running 🚀"
@@ -16,8 +18,6 @@ def login():
     if data.get("username") == "admin":
         return jsonify({"message": "Login success"})
     return jsonify({"message": "Unauthorized"}), 401
-
-password = "password123"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
