@@ -7,15 +7,15 @@ on:
       - main
 
 jobs:
-  build-and-secure:
+  build-secure-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # ✅ Checkout FULL repo (IMPORTANT FIX)
+    # ✅ Checkout full repo (important for Gitleaks)
     - name: Checkout Code
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0   # 🔥 Enables full history scan
+        fetch-depth: 0
 
     # 🐳 Build Docker Image
     - name: Build Docker Image
@@ -23,7 +23,7 @@ jobs:
         cd app
         docker build -t devsecops-app .
 
-    # 🔐 Gitleaks Full Repository Scan (FINAL FIX)
+    # 🔐 Gitleaks Full Scan (fail on secrets)
     - name: Run Gitleaks Scan
       run: |
         docker run --rm -v $(pwd):/repo zricethezav/gitleaks detect \
@@ -33,7 +33,7 @@ jobs:
           --redact \
           --exit-code=1
 
-    # 🛡 Trivy Vulnerability Scan
+    # 🛡 Trivy Scan (non-blocking)
     - name: Run Trivy Scan
       uses: aquasecurity/trivy-action@master
       with:
@@ -42,7 +42,22 @@ jobs:
         exit-code: 0
         severity: CRITICAL,HIGH
         ignore-unfixed: true
-    # ✅ Success Message
+
+    # 🔑 Login to DockerHub
+    - name: Login to DockerHub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    # 🏷 Tag Docker Image
+    - name: Tag Docker Image
+      run: |
+        docker tag devsecops-app ${{ secrets.DOCKER_USERNAME }}/devsecops-app:latest
+
+    # 🚀 Push Docker Image
+    - name: Push Docker Image
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/devsecops-app:latest
+
+    # ✅ Final Success Message
     - name: Pipeline Success
       if: success()
-      run: echo "✅ Build and Security Checks Passed!"
+      run: echo "✅ CI/CD + Security + Deployment Pipeline Successful!"
