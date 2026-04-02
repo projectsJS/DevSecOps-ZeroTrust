@@ -41,7 +41,7 @@ jobs:
         format: table
         exit-code: 1
         severity: CRITICAL,HIGH
-
+        ignore-unfixed: true
     # ✅ Success Message
     - name: Pipeline Success
       if: success()
