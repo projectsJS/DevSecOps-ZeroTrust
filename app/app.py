@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-AWS_SECRET_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLE"
+PRIVATE_KEY = """-----BEGIN RSA PRIVATE KEY-----
+ABC123SECRET
+-----END RSA PRIVATE KEY-----"""
 
 @app.route("/")
 def home():

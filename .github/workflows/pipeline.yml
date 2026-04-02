@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # ✅ Checkout Code
     - name: Checkout Code
       uses: actions/checkout@v3
 
@@ -20,11 +21,16 @@ jobs:
         cd app
         docker build -t devsecops-app .
 
-    # 🔐 Scan for Secrets (Gitleaks)
+    # 🔐 Gitleaks Full Scan (FIXED)
     - name: Run Gitleaks Scan
-      uses: zricethezav/gitleaks-action@v2
+      run: |
+        docker run --rm -v $(pwd):/repo zricethezav/gitleaks detect \
+          --source=/repo \
+          --verbose \
+          --redact \
+          --exit-code=1
 
-    # 🛡 Scan Docker Image (Trivy)
+    # 🛡 Trivy Vulnerability Scan
     - name: Run Trivy Scan
       uses: aquasecurity/trivy-action@master
       with:
@@ -32,3 +38,8 @@ jobs:
         format: table
         exit-code: 1
         severity: CRITICAL,HIGH
+
+    # 📊 Success Message (Optional)
+    - name: Pipeline Success
+      if: success()
+      run: echo "✅ Build and Security Checks Passed!"
