@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "DevSecOps Zero Trust App Running 🚀"
+    return "DevSecOps Zero Trust App Running with kubernetes applied 🚀"
 
 @app.route("/health")
 def health():
