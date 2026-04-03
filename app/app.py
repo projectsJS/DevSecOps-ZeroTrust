@@ -36,22 +36,46 @@ SECRET_KEY = get_secret_from_vault()
 
 app = Flask(__name__)
 
+# def token_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         token = request.headers.get("Authorization")
+
+#         if not token:
+#             return jsonify({"message": "Token missing"}), 403
+
+#         try:
+#             jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+#         except:
+#             return jsonify({"message": "Invalid token"}), 403
+
+#         return f(*args, **kwargs)
+
+#     return decorated
+
 def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = request.headers.get("Authorization")
+    def decorator(*args, **kwargs):
+        token = None
+
+        # 1. Check Authorization header (curl/postman)
+        if "Authorization" in request.headers:
+            token = request.headers.get("Authorization")
+
+        # 2. Check query param (browser)
+        if not token:
+            token = request.args.get("token")
 
         if not token:
-            return jsonify({"message": "Token missing"}), 403
+            return jsonify({"message": "Token missing"}), 401
 
         try:
             jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         except:
-            return jsonify({"message": "Invalid token"}), 403
+            return jsonify({"message": "Invalid token"}), 401
 
         return f(*args, **kwargs)
 
-    return decorated
+    return decorator
 
 @app.route("/")
 @token_required
