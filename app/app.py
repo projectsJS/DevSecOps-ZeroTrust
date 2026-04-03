@@ -17,20 +17,20 @@ from datetime import datetime, timedelta, UTC
 #     return data["data"]["data"]["SECRET_KEY"]
 
 def get_secret_from_vault():
-    url = "http://localhost:8200/v1/secret/data/devsecops"
-    headers = {"X-Vault-Token": os.getenv("VAULT_TOKEN")}
+    try:
+        url = "http://vault:8200/v1/secret/data/devsecops"
+        headers = {
+            "X-Vault-Token": os.getenv("VAULT_TOKEN")
+        }
 
-    response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers)
+        data = response.json()
 
-    if response.status_code != 200:
-        raise Exception(f"Vault error: {response.text}")
+        return data["data"]["data"]["SECRET_KEY"]
 
-    data = response.json()
-
-    if "data" not in data:
-        raise Exception(f"Unexpected response: {data}")
-
-    return data["data"]["data"]["SECRET_KEY"]
+    except Exception as e:
+        print("Vault error:", e)
+        return "fallback-secret"
 
 SECRET_KEY = get_secret_from_vault()
 
