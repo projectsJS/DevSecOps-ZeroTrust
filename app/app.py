@@ -1,10 +1,11 @@
 import jwt
 import datetime
+import os
 from flask import Flask, request, jsonify
 from functools import wraps
 from datetime import datetime, timedelta, UTC
 
-SECRET_KEY = "supersecretkey1234%"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 app = Flask(__name__)
 
