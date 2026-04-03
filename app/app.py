@@ -56,7 +56,7 @@ def token_required(f):
 @app.route("/")
 @token_required
 def home():
-    return "Secure DevSecOps App Running 🔐"
+    return "Version 2 🚀 DevSecOps Working!"
 
 @app.route("/health")
 def health():
