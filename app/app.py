@@ -6,6 +6,32 @@ from flask import Flask, request, jsonify
 from functools import wraps
 from datetime import datetime, timedelta, UTC
 
+
+# def get_secret_from_vault():
+#     url = "http://localhost:8200/v1/secret/data/devsecops"
+#     headers = {"X-Vault-Token": "VAULT_TOKEN"}  # for demo only
+
+#     response = requests.get(url, headers=headers)
+#     data = response.json()
+
+#     return data["data"]["data"]["SECRET_KEY"]
+
+def get_secret_from_vault():
+    url = "http://localhost:8200/v1/secret/data/devsecops"
+    headers = {"X-Vault-Token": os.getenv("VAULT_TOKEN")}
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise Exception(f"Vault error: {response.text}")
+
+    data = response.json()
+
+    if "data" not in data:
+        raise Exception(f"Unexpected response: {data}")
+
+    return data["data"]["data"]["SECRET_KEY"]
+
 SECRET_KEY = get_secret_from_vault()
 
 app = Flask(__name__)
@@ -50,14 +76,6 @@ def login():
 
     return jsonify({"message": "Unauthorized"}), 401
 
-def get_secret_from_vault():
-    url = "http://vault:8200/v1/secret/data/devsecops"
-    headers = {"X-Vault-Token": "root"}  # for demo only
-
-    response = requests.get(url, headers=headers)
-    data = response.json()
-
-    return data["data"]["data"]["SECRET_KEY"]
 
 
 if __name__ == "__main__":
