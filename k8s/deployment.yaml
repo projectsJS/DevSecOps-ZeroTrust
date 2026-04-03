@@ -18,3 +18,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
+        env:
+        - name: VAULT_TOKEN
+          value: "hvs.xxxxx"
