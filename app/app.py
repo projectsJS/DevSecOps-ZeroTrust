@@ -1,11 +1,12 @@
 import jwt
 import datetime
 import os
+import requests
 from flask import Flask, request, jsonify
 from functools import wraps
 from datetime import datetime, timedelta, UTC
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = get_secret_from_vault()
 
 app = Flask(__name__)
 
@@ -48,6 +49,15 @@ def login():
         return jsonify({"token": token})
 
     return jsonify({"message": "Unauthorized"}), 401
+
+def get_secret_from_vault():
+    url = "http://vault:8200/v1/secret/data/devsecops"
+    headers = {"X-Vault-Token": "root"}  # for demo only
+
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    return data["data"]["data"]["SECRET_KEY"]
 
 
 if __name__ == "__main__":
