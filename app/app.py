@@ -78,9 +78,14 @@ def token_required(f):
     return decorator
 
 @app.route("/")
-@token_required
 def home():
     return "Version 2 🚀 DevSecOps Working!"
+
+
+@app.route("/secure")
+@token_required
+def secure_home():
+    return jsonify({"message": "Secure endpoint access granted"})
 
 @app.route("/health")
 def health():
