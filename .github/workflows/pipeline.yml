@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/devsecops-app
+      KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
 
     steps:
     # ✅ Checkout full repo (important for Gitleaks)
@@ -63,10 +64,10 @@ jobs:
 
     # ☸️ Optional CD: deploy pushed commit image to Kubernetes
     - name: Deploy to Kubernetes
-      if: ${{ secrets.KUBE_CONFIG_DATA != '' }}
+      if: ${{ env.KUBE_CONFIG_DATA != '' }}
       run: |
         mkdir -p $HOME/.kube
-        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
+        echo "${{ env.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
         kubectl set image deployment/devsecops-app devsecops-app=${{ env.IMAGE_NAME }}:${{ github.sha }} --record
         kubectl rollout status deployment/devsecops-app --timeout=180s
 
