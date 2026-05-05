@@ -79,7 +79,7 @@ def token_required(f):
 
 @app.route("/")
 def home():
-    return "Hey lets make coffee together!!! test 4"
+    return "Hey lets make coffee together!!! test 5"
 
 
 @app.route("/secure")
