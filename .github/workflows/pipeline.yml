@@ -9,6 +9,8 @@ on:
 jobs:
   build-secure-deploy:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/devsecops-app
 
     steps:
     # ✅ Checkout full repo (important for Gitleaks)
@@ -21,7 +23,7 @@ jobs:
     - name: Build Docker Image
       run: |
         cd app
-        docker build -t devsecops-app .
+        docker build -t devsecops-app:${{ github.sha }} .
 
     # 🔐 Gitleaks Full Scan (fail on secrets)
     - name: Run Gitleaks Scan
@@ -37,7 +39,7 @@ jobs:
     - name: Run Trivy Scan
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: devsecops-app
+        image-ref: devsecops-app:${{ github.sha }}
         format: table
         exit-code: 0
         severity: CRITICAL,HIGH
@@ -50,12 +52,23 @@ jobs:
     # 🏷 Tag Docker Image
     - name: Tag Docker Image
       run: |
-        docker tag devsecops-app ${{ secrets.DOCKER_USERNAME }}/devsecops-app:latest
+        docker tag devsecops-app:${{ github.sha }} ${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker tag devsecops-app:${{ github.sha }} ${{ env.IMAGE_NAME }}:latest
 
     # 🚀 Push Docker Image
     - name: Push Docker Image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/devsecops-app:latest
+        docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker push ${{ env.IMAGE_NAME }}:latest
+
+    # ☸️ Optional CD: deploy pushed commit image to Kubernetes
+    - name: Deploy to Kubernetes
+      if: ${{ secrets.KUBE_CONFIG_DATA != '' }}
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
+        kubectl set image deployment/devsecops-app devsecops-app=${{ env.IMAGE_NAME }}:${{ github.sha }} --record
+        kubectl rollout status deployment/devsecops-app --timeout=180s
 
     # ✅ Final Success Message
     - name: Pipeline Success
