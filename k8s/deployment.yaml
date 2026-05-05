@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: devsecops-app
-        image: devsecops-app:v2
-        imagePullPolicy: IfNotPresent
+        image: tanishqraina/devsecops-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         env:
