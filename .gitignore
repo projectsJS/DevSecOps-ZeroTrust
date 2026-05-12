@@ -1,5 +1,13 @@
-.env
-*.log
-__pycache__/
 node_modules/
-*.pem
+dist/
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+token.json
+.env
+
+.DS_Store
+*.log
