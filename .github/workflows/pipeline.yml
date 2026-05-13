@@ -23,8 +23,7 @@ jobs:
     # 🐳 Build Docker Image
     - name: Build Docker Image
       run: |
-        cd app
-        docker build -t devsecops-app:${{ github.sha }} .
+        docker build -f app/Dockerfile -t devsecops-app:${{ github.sha }} .
 
     # 🔐 Gitleaks Full Scan (fail on secrets)
     - name: Run Gitleaks Scan
