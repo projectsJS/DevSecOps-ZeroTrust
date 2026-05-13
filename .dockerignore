@@ -2,10 +2,12 @@
 .github
 node_modules
 **/node_modules
+dist
 frontend/dist
 app/static
 __pycache__
 **/__pycache__
+.pytest_cache
 *.pyc
 *.pyo
 *.pyd

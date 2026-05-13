@@ -1,12 +1,12 @@
 FROM node:20 AS frontend-build
 
-WORKDIR /workspace
+WORKDIR /frontend
 
-COPY frontend ./frontend
-COPY app ./app
+COPY frontend/package*.json ./
+RUN npm ci
 
-RUN npm ci --prefix frontend
-RUN npm run build --prefix frontend
+COPY frontend ./
+RUN npm run build
 
 
 FROM python:3.11-slim
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY app ./
-COPY --from=frontend-build /workspace/app/static ./static
+COPY --from=frontend-build /frontend/dist ./static
 
 EXPOSE 5000
 
