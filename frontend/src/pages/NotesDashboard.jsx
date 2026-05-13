@@ -12,8 +12,8 @@ import useToast from "../hooks/useToast";
 const activity = [
   {
     id: "evt-1",
-    title: "New incident note added to queue",
-    time: "5 min ago",
+    title: "New incident note added to Hello",
+    time: "10 min ago",
     actor: "policy-engine"
   },
   {
