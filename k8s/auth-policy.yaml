@@ -1,0 +1,10 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-only-authenticated
+  namespace: default
+spec:
+  rules:
+  - from:
+    - source:
+        principals: ["*"]

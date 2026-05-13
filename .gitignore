@@ -1,0 +1,16 @@
+node_modules/
+dist/
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+token.json
+.env
+
+gitleaks-report.json
+trivy-report.json
+
+.DS_Store
+*.log

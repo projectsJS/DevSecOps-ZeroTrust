@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #07090f;
+  color: #e2e8f0;
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui;
+  background-image: theme("backgroundImage.radial-glow"), theme("backgroundImage.grid-dark");
+  background-size: cover, 48px 48px;
+  background-attachment: fixed;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: rgba(7, 9, 15, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+.card-surface {
+  border-radius: 18px;
+  border: 1px solid rgba(35, 45, 69, 0.8);
+  background: rgba(15, 19, 32, 0.88);
+  box-shadow: 0 16px 35px rgba(5, 8, 16, 0.6);
+}
+
+.glass-panel {
+  border-radius: 18px;
+  border: 1px solid rgba(35, 45, 69, 0.7);
+  background: rgba(19, 24, 42, 0.7);
+  backdrop-filter: blur(16px);
+}
+
+.page-enter {
+  animation: pageFade 480ms ease-out both;
+}
+
+.stagger > * {
+  animation: riseIn 520ms ease-out both;
+}
+
+.stagger > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.stagger > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger > *:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.stagger > *:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,5 @@
+flask
+PyJWT
+requests
+flask-cors
+gunicorn
