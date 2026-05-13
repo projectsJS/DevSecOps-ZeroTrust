@@ -5,7 +5,7 @@ from functools import wraps
 
 import jwt
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 
@@ -54,10 +54,12 @@ NOTES = [
 ]
 NEXT_NOTE_ID = 3
 
-REPORTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+APP_DIR = os.path.dirname(__file__)
+STATIC_DIR = os.path.join(APP_DIR, "static")
+REPORTS_DIR = os.path.abspath(os.path.join(APP_DIR, ".."))
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="/")
 # Allow the isolated frontend to call this API during local development.
 CORS(app)
 
@@ -182,7 +184,10 @@ def summarize_gitleaks(report):
 
 @app.route("/")
 def home():
-    return "Hey lets make coffee together!!! test 8"
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(index_path):
+        return send_from_directory(STATIC_DIR, "index.html")
+    return "Frontend build missing", 404
 
 
 @app.route("/secure")
@@ -193,6 +198,11 @@ def secure_home():
 @app.route("/health")
 def health():
     return jsonify({"status": "healthy"})
+
+
+@app.route("/api/health")
+def api_health():
+    return jsonify({"status": "ok"})
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -294,6 +304,14 @@ def gitleaks_report():
         return jsonify({"available": True, **payload})
     except Exception as exc:
         return jsonify({"message": f"Failed to parse Gitleaks report: {exc}"}), 500
+
+
+@app.route("/<path:subpath>")
+def spa_fallback(subpath):
+    file_path = os.path.join(STATIC_DIR, subpath)
+    if os.path.isfile(file_path):
+        return send_from_directory(STATIC_DIR, subpath)
+    return send_from_directory(STATIC_DIR, "index.html")
 
 
 

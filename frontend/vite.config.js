@@ -9,6 +9,8 @@ export default defineConfig({
   },
   build: {
     target: "es2019",
-    sourcemap: false
+    sourcemap: false,
+    outDir: "../app/static",
+    emptyOutDir: true
   }
 });
